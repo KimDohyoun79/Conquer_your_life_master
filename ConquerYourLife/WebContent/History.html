@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width-device-width" , initial-scale="1">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <title>연대기</title>
+    <style type="text/css">
+        body {
+            margin: 0% auto;
+            background-color: #98dfd8;
+            box-sizing: border-box;
+            font-family: 'Lobster', cursive;
+        }
+
+        ul {
+            position: relative;
+            width: 100%;
+            height: auto;
+            margin-top: 10%;
+            margin-left: 7.5%;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+
+        ul li {
+            display: flex;
+            background: rgba(255, 255, 255, .5);
+            font-size: 100%;
+            text-align: center;
+            width: 90%;
+            height: 80%;
+            margin-top: -0.2%;
+            margin-left: 0%;
+            font-size: 2.5em;
+        }
+
+        
+        ul li span:nth-child(1) {
+            width: 12%;
+            background-color: #ffffff;
+            padding: 3%;
+        }
+
+        ul li span:nth-child(2) {
+            width: 30%;
+            padding: 3%;
+        }
+
+        ul li span:nth-child(3) {
+            width: 30%;
+            padding: 3%;
+        }
+
+        ul li span:nth-child(4) {
+            width: 30%;
+            padding: 3%;
+        }
+
+        .top {
+            text-align: center;
+            font-size: 10em;
+            margin: 7% 0% 10% 9%;
+        }
+
+        .c1 {
+            background-color: lightcoral;
+        }
+        .c2 {
+            background-color: mediumspringgreen;
+        }
+        .c3 {
+            background-color: lightskyblue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="MapView.html"><img src="images/Back_1.png" style="max-width: 10%;height: auto; padding: 4% 3% 3% 5%;"></a>
+
+    <p class="top">
+        History
+    </p>
+
+    
+	<div id="contents-area" class="section">
+	</div>
+
+</body>
+
+</html>
+
+<script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/core.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	Page.init(start);
+});
+
+var pagectx = {};
+var usrobj;
+var countryobj;
+
+function country(obj){
+	countryobj = obj;
+
+	var params = "idx=" + countryobj.CountryIndex;
+	AJAX.call("jsp/History.jsp",params,function(data){
+		var feeds = JSON.parse(data.trim());
+		pagectx.feeds = feeds;
+		generate(feeds);
+	});
+}
+
+function start(usrobj){
+	pagectx.usrobj = usrobj;
+	Page.getcontry(country);
+}
+
+function generate(list){
+	var str = "<ul> ";
+
+    str += "<li>";
+    str += "<span>제목</span>";
+    str += "<span>시작 날짜</span>";
+    str += "<span>마지막체크 날짜</span>";
+    str += "</li>";
+	for (var i=0; i<list.length; i++) {
+		str += getFeedStr(list[i]);
+	}
+	str += "</ul>";
+	$("#contents-area").html(str);
+}
+
+function getFeedStr(feed){
+	var str = "";
+
+    str += "<li>";
+    str += "<span>"+ feed.Name + "</span>";
+    str += "<span>" + feed.StartDate + "</span>";
+    /*
+    var b = new Date("2020-06-21");
+    var c = new Date(feed.LastUpdate);
+    if(c.getTime() >= b.getTime())
+	    str += "<span>" + feed.LastUpdate + "</span>";
+	else
+	    str += "<span> - </span>";
+	*/    	
+    str += "<span>" + feed.LastUpdate + "</span>";
+    str += "</li>";
+	return str;
+}
+
+</script>
